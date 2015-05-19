@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="GBK"?>
+<dido_config_table>
+  <device>
+    <OtherDevice>
+      <di>
+        <board_type_1>
+          <NULL QSXmlData=""/>
+          <_1 QSXmlData="汉字"/>
+        </board_type_1>
+      </di>
+    </OtherDevice>
+  </device>
+</dido_config_table>

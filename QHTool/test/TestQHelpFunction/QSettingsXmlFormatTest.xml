@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="GBK"?>
+<!DOCTYPE QSettingsXml>
+<dido_config_table>
+  <device1>device1 Vaule</device1>
+  <device>
+    <OtherDevice>
+      <di>
+        <board_type_1>
+          <NULL></NULL>
+          <_1>汉字</_1>
+          <_2>English</_2>
+          <intnumber>12345</intnumber>
+          <float>12.345</float>
+        </board_type_1>
+      </di>
+    </OtherDevice>
+    <OtherDevice1>OtherDevice1 值</OtherDevice1>
+  </device>
+</dido_config_table>

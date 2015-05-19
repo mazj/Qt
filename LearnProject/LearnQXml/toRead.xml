@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="GB2312" standalone="yes" ?> 
+<PROJECT>
+		<PMUConf Version="PmuUdpV1" PhasorType="rectangle" SampFreq="4000" NormFreq="50" IDCODE="0BJ0SFb1" STNAME="北京四方" ALIAS="0SFb" ALIASHD="000SFb" LOOPRD="正序" TRIGBEFORE="2" TRIGAFTER="3" COMHISTPORT="8600" LOOPDAY="14" PLATFORM="0" />
+		<Dataset>
+			<LogicalDevice LineName="线路1" LDType="线路" LDName="1" DevName="0000001" DevNameHD="00001" V2max="120" A2max="100" PT1="1000.0" CT1="5000.0" AltV1DevName="" AltV2DevName="" depMidBreaker="中开关1" OffAngle="0.0"/>
+			<LogicalDevice LineName="中开关1" LDType="中开关" LDName="2" DevName="0000002" DevNameHD="00002" V2max="120" A2max="100" PT1="1000.0" CT1="5000.0" AltV1DevName="" AltV2DevName="" depMidBreaker="" OffAngle="0.0"/>
+		</Dataset>
+		<Board ID="1" Type="SV" IP="192.178.111.1" DESC="SV">
+			<Group NO="1" Type="SV" DESC="以太网1">
+				<Chan PCName="1" LineNo="1" LineName="线路1" Type="AC_U" Phase="A" OffAngle="0.0" ValStop="0.0" measMax="0.0" measOffset="0.0" Max="0.0" Min="0.0" InputType="0" MuNo="1"/>
+				<Chan PCName="2" LineNo="2" LineName="线路1" Type="AC_U" Phase="B" OffAngle="0.0" ValStop="0.0" measMax="0.0" measOffset="0.0" Max="0.0" Min="0.0" InputType="0" MuNo="1"/>
+				<Chan PCName="3" LineNo="3" LineName="线路1" Type="AC_U" Phase="C" OffAngle="0.0" ValStop="0.0" measMax="0.0" measOffset="0.0" Max="0.0" Min="0.0" InputType="0" MuNo="1"/>
+				<Chan PCName="4" LineNo="4" LineName="线路1" Type="AC_I" Phase="A" OffAngle="0.0" ValStop="0.0" measMax="0.0" measOffset="0.0" Max="0.0" Min="0.0" InputType="0" MuNo="1"/>
+				<Chan PCName="5" LineNo="5" LineName="线路1" Type="AC_I" Phase="B" OffAngle="0.0" ValStop="0.0" measMax="0.0" measOffset="0.0" Max="0.0" Min="0.0" InputType="0" MuNo="1"/>
+				<Chan PCName="6" LineNo="6" LineName="线路1" Type="AC_I" Phase="C" OffAngle="0.0" ValStop="0.0" measMax="0.0" measOffset="0.0" Max="0.0" Min="0.0" InputType="0" MuNo="1"/>
+				<Chan PCName="7" LineNo="7" LineName="NULL" Type="AC_U" Phase="A" OffAngle="0.0" ValStop="0.0" measMax="0.0" measOffset="0.0" Max="0.0" Min="0.0" InputType="0" MuNo="1"/>
+				<Chan PCName="8" LineNo="8" LineName="NULL" Type="AC_U" Phase="B" OffAngle="0.0" ValStop="0.0" measMax="0.0" measOffset="0.0" Max="0.0" Min="0.0" InputType="0" MuNo="1"/>
+				<Chan PCName="9" LineNo="9" LineName="NULL" Type="AC_U" Phase="C" OffAngle="0.0" ValStop="0.0" measMax="0.0" measOffset="0.0" Max="0.0" Min="0.0" InputType="0" MuNo="1"/>
+				<Chan PCName="10" LineNo="10" LineName="中开关1" Type="AC_I" Phase="A" OffAngle="0.0" ValStop="0.0" measMax="0.0" measOffset="0.0" Max="0.0" Min="0.0" InputType="0" MuNo="1"/>
+				<Chan PCName="11" LineNo="11" LineName="中开关1" Type="AC_I" Phase="B" OffAngle="0.0" ValStop="0.0" measMax="0.0" measOffset="0.0" Max="0.0" Min="0.0" InputType="0" MuNo="1"/>
+				<Chan PCName="12" LineNo="12" LineName="中开关1" Type="AC_I" Phase="C" OffAngle="0.0" ValStop="0.0" measMax="0.0" measOffset="0.0" Max="0.0" Min="0.0" InputType="0" MuNo="1"/>
+				<Chan PCName="13" LineNo="13" LineName="NULL" Type="AC_U" Phase="A" OffAngle="0.0" ValStop="0.0" measMax="0.0" measOffset="0.0" Max="0.0" Min="0.0" InputType="0" MuNo="1"/>
+				<Chan PCName="14" LineNo="14" LineName="NULL" Type="AC_U" Phase="B" OffAngle="0.0" ValStop="0.0" measMax="0.0" measOffset="0.0" Max="0.0" Min="0.0" InputType="0" MuNo="1"/>
+				<Chan PCName="15" LineNo="15" LineName="NULL" Type="AC_U" Phase="C" OffAngle="0.0" ValStop="0.0" measMax="0.0" measOffset="0.0" Max="0.0" Min="0.0" InputType="0" MuNo="1"/>
+				<Chan PCName="16" LineNo="16" LineName="NULL" Type="AC_I" Phase="A" OffAngle="0.0" ValStop="0.0" measMax="0.0" measOffset="0.0" Max="0.0" Min="0.0" InputType="0" MuNo="1"/>
+				<Chan PCName="17" LineNo="17" LineName="NULL" Type="AC_I" Phase="B" OffAngle="0.0" ValStop="0.0" measMax="0.0" measOffset="0.0" Max="0.0" Min="0.0" InputType="0" MuNo="1"/>
+				<Chan PCName="18" LineNo="18" LineName="NULL" Type="AC_I" Phase="C" OffAngle="0.0" ValStop="0.0" measMax="0.0" measOffset="0.0" Max="0.0" Min="0.0" InputType="0" MuNo="1"/>
+				<Chan PCName="19" LineNo="19" LineName="NULL" Type="AC_U" Phase="A" OffAngle="0.0" ValStop="0.0" measMax="0.0" measOffset="0.0" Max="0.0" Min="0.0" InputType="0" MuNo="1"/>
+				<Chan PCName="20" LineNo="20" LineName="NULL" Type="AC_U" Phase="B" OffAngle="0.0" ValStop="0.0" measMax="0.0" measOffset="0.0" Max="0.0" Min="0.0" InputType="0" MuNo="1"/>
+				<Chan PCName="21" LineNo="21" LineName="NULL" Type="AC_U" Phase="C" OffAngle="0.0" ValStop="0.0" measMax="0.0" measOffset="0.0" Max="0.0" Min="0.0" InputType="0" MuNo="1"/>
+				<Chan PCName="22" LineNo="22" LineName="NULL" Type="AC_I" Phase="A" OffAngle="0.0" ValStop="0.0" measMax="0.0" measOffset="0.0" Max="0.0" Min="0.0" InputType="0" MuNo="1"/>
+				<Chan PCName="23" LineNo="23" LineName="NULL" Type="AC_I" Phase="B" OffAngle="0.0" ValStop="0.0" measMax="0.0" measOffset="0.0" Max="0.0" Min="0.0" InputType="0" MuNo="1"/>
+				<Chan PCName="24" LineNo="24" LineName="NULL" Type="AC_I" Phase="C" OffAngle="0.0" ValStop="0.0" measMax="0.0" measOffset="0.0" Max="0.0" Min="0.0" InputType="0" MuNo="1"/>
+			</Group>
+		</Board>
+		<Board ID="2" Type="COMPUTE" IP="192.178.111.1" DESC="机箱1计算插件1">
+			<Group DESC="iobase"/>
+			<Group DESC="plat"/>
+			<Group DESC="pmu"/>
+			<Group DESC="trig"/>
+			<Group DESC="looprd"/>
+			<Group DESC="comhist"/>
+		</Board>
+		<Equipalert>
+			<AlertType Type="ALARM" LampNo="2" LampColour="RED" DESC="装置告警">
+			</AlertType>
+			<AlertType Type="COMM" LampNo="4" LampColour="RED" DESC="主站通信异常">
+			</AlertType>
+			<AlertType Type="SAVE" LampNo="3" LampColour="RED" DESC="存储异常">
+			</AlertType>
+			<AlertType Type="CHECK" LampNo="5" LampColour="RED" DESC="装置检修">
+			</AlertType>
+		</Equipalert>
+</PROJECT>

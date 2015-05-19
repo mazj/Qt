@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="GBK"?>
+<!-- 根节点不能有属性 -->
+<dido_config_table QSXmlData="dido_config_table data">
+	<device1>device1 Vaule</device1>
+	<device>
+		<OtherDevice QSXmlData="OtherDevice数据">
+			<di>
+				<board_type_1 QSXmlData="">
+					<NULL/>
+					<_1>汉字</_1>
+					<_1>English</_1>
+					<intnumber QSXmlData="123456">12345</intnumber>
+					<float>12.345</float>
+				</board_type_1>
+			</di>
+		</OtherDevice>
+		<OtherDevice1>OtherDevice1 值</OtherDevice1>
+	</device>
+</dido_config_table>

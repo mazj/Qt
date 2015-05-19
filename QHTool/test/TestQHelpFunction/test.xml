@@ -1,0 +1,10 @@
+<first>firstText
+	<second>
+		<third>thirdtext1</third>
+		<third>thirdtext2</third>
+	</second>
+	<second>
+		<third>thirdtext3</third>
+		<third>thirdtext4</third>
+	</second>
+</first>

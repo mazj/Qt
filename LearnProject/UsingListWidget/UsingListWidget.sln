@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UsingListWidget", "UsingListWidget.vcproj", "{AA26AA0B-7AD2-374E-8A9E-FE981463A9AF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AA26AA0B-7AD2-374E-8A9E-FE981463A9AF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{AA26AA0B-7AD2-374E-8A9E-FE981463A9AF}.Debug|Win32.Build.0 = Debug|Win32
+		{AA26AA0B-7AD2-374E-8A9E-FE981463A9AF}.Release|Win32.ActiveCfg = Release|Win32
+		{AA26AA0B-7AD2-374E-8A9E-FE981463A9AF}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

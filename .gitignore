@@ -1,0 +1,51 @@
+
+
+#### common
+
+*.bk
+*.bak
+.svn
+
+#### windows
+
+*.vcxproj.use
+*.opensdf
+*.sdf
+*.suo
+*.user
+*.zip
+*.ncb
+
+Debug
+DebugPasskey
+ipch
+Release
+ReleasePasskey
+Debug_vc10
+DebugPasskey_vc10
+DebugVDM
+ReleaseVDM
+
+
+#### macosx
+
+*.o
+*.a
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+*.DS_Store
+xcuserdata
+
+### Qt
+*.user
+
+### my file
+精通Qt4编程+第二版.rar
+精通Qt4编程.pdf
+Qt4.bk.2015.5.19.zip
+Qt Model-View（ 一）.htm
+Qt Model-View（ 一）_files
+qmake介绍.docx
+C++GUI+programming+with+Qt+4所有代码.zip
+C++.GUI.Qt.4编程(第二版).pdf
+Qt及Qt Quick开发实战精解
