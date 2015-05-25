@@ -114,50 +114,99 @@ bool qhInstallMsgHandler_file(const QString & file, const QString & softwareName
 
 #define TRACKER_BEGIN "TrackerBegin"
 #define TRACKER_END "TrackerEnd"
-#define TRACKER "Tracker"
+#define TRACKER "ITracker"
 
 /**
- * 一个 Tracker 对应一个 输出文件
+ * 跟踪器接口，可以有不同类型的跟踪器
  */
-class Tracker
+class ITracker
 {
 public:
-    static Tracker *create(const QString & title, const QString & file);
-    static int increaseRef(Tracker *t);
-    static int decreaseRef(Tracker * & t);
+    static int increaseRef(ITracker *t);
+    static int decreaseRef(ITracker * & t);
 
-    bool flush() { return m_outPutFile.flush(); }
-    void writeText(const QString & text) { m_outPutFile.write(text.toLocal8Bit()); }
+    virtual bool flush() { return true; }
+    virtual void writeText(const QString & text) = 0;
 
 protected:
     //  禁止复制
-    Tracker(const Tracker &);
-    Tracker & operator =(const Tracker &);
+    ITracker(const ITracker &);
+    ITracker & operator =(const ITracker &);
 
-    Tracker(const QString & title, const QString & file);
-    virtual ~Tracker();
+    ITracker(const QString & title);
+    virtual ~ITracker();
 
     //因为 writeBeginElement writtEndElement 的调用次数必须相同，防止外部调用次数不一致
     // 只允许 TrackElement TrackHelper 调用
     friend class TrackHelper;
     friend class TrackElement;
-    void writeBeginElement(const QString & element,
-                           const QMap<QString, QString> & attribute = QMap<QString, QString>());
-    void writtEndElement(const QString & element, bool newLine = false);
+    virtual void writeBeginElement(const QString & element,
+                           const QMap<QString, QString> & attribute = QMap<QString, QString>()) = 0;
+    virtual void writtEndElement(const QString & element, bool newLine = false) = 0;
 
-protected:
-    QFile m_outPutFile;
-    QString m_indent;
+protected:    
     QString m_title;
     int m_refCount;
 };
 
-Tracker::Tracker(const QString &title, const QString &file)
-    :
-      m_outPutFile(file),
-      m_indent(),
-      m_title(title),
+int ITracker::increaseRef(ITracker *t)
+{
+    t->m_refCount++;
+    return t->m_refCount;
+}
+
+int ITracker::decreaseRef(ITracker *&t)
+{
+    t->m_refCount--;
+    int n = t->m_refCount;
+    if ( t->m_refCount == 0)
+    {
+        delete t;
+        t = NULL;
+    }
+    return n;
+}
+
+
+ITracker::ITracker(const QString &title)
+    : m_title(title),
       m_refCount(0)
+{
+}
+
+ITracker::~ITracker()
+{
+}
+
+class TrackerForXmlFile : public ITracker
+{
+public:
+    virtual bool flush() { return m_outPutFile.flush(); }
+    virtual void writeText(const QString & text) { m_outPutFile.write(text.toLocal8Bit()); }
+
+protected:
+    TrackerForXmlFile(const QString & title, const QString & file);
+    virtual ~TrackerForXmlFile();
+
+    //因为 writeBeginElement writtEndElement 的调用次数必须相同，防止外部调用次数不一致
+    // 只允许 TrackElement TrackHelper 调用
+    friend class TrackHelper;
+    friend class TrackElement;
+    virtual void writeBeginElement(const QString & element,
+                           const QMap<QString, QString> & attribute = QMap<QString, QString>());
+    virtual void writtEndElement(const QString & element, bool newLine = false);
+
+protected:
+    QFile m_outPutFile;
+    QString m_indent;
+};
+
+
+
+TrackerForXmlFile::TrackerForXmlFile(const QString &title, const QString &file)
+    : ITracker(title),
+      m_outPutFile(file),
+      m_indent()
 {
     bool ret;
     m_outPutFile.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text);
@@ -174,30 +223,7 @@ Tracker::Tracker(const QString &title, const QString &file)
     writeBeginElement(m_title, attribute);
 }
 
-Tracker *Tracker::create(const QString &title, const QString &file)
-{
-    return new Tracker(title, file);
-}
-
-int Tracker::increaseRef(Tracker *t)
-{
-    t->m_refCount++;
-    return t->m_refCount;
-}
-
-int Tracker::decreaseRef(Tracker *&t)
-{
-    t->m_refCount--;
-    int n = t->m_refCount;
-    if ( t->m_refCount == 0)
-    {
-        delete t;
-        t = NULL;
-    }
-    return n;
-}
-
-Tracker::~Tracker()
+TrackerForXmlFile::~TrackerForXmlFile()
 {
     writtEndElement(m_title, true);
     m_outPutFile.write("\n");
@@ -205,7 +231,9 @@ Tracker::~Tracker()
     m_outPutFile.close();
 }
 
-void Tracker::writeBeginElement(const QString &element,
+
+
+void TrackerForXmlFile::writeBeginElement(const QString &element,
                                 const QMap<QString, QString> & attribute)
 {
     m_outPutFile.write("\n");
@@ -226,7 +254,7 @@ void Tracker::writeBeginElement(const QString &element,
 //            writeElement
 }
 
-void Tracker::writtEndElement(const QString &element, bool newLine)
+void TrackerForXmlFile::writtEndElement(const QString &element, bool newLine)
 {
     if (newLine)
     {
@@ -239,22 +267,122 @@ void Tracker::writtEndElement(const QString &element, bool newLine)
 
 }
 
-TrackHelper::TrackHelperDeleter::~TrackHelperDeleter()
+class TrackerForQDebug : public ITracker
 {
-    for(int i=0; i<trackHelperList.size(); i++)
+public:
+    virtual bool flush() { return true; }
+    virtual void writeText(const QString & text);
+
+protected:
+    TrackerForQDebug(const QString & title);
+    virtual ~TrackerForQDebug();
+
+    //因为 writeBeginElement writtEndElement 的调用次数必须相同，防止外部调用次数不一致
+    // 只允许 TrackElement TrackHelper 调用
+    friend class TrackHelper;
+    friend class TrackElement;
+    virtual void writeBeginElement(const QString & element,
+                           const QMap<QString, QString> & attribute = QMap<QString, QString>());
+    virtual void writtEndElement(const QString & element, bool newLine = false);
+
+protected:
+    QString m_indent;
+};
+
+
+
+TrackerForQDebug::TrackerForQDebug(const QString &title)
+    : ITracker(title),
+      m_indent()
+{
+    QMap<QString, QString> attribute;
+    attribute.insert("time", QDateTime::currentDateTime().toString());
+    writeBeginElement(m_title, attribute);
+}
+
+TrackerForQDebug::~TrackerForQDebug()
+{
+    writtEndElement(m_title, true);
+}
+
+void TrackerForQDebug::writeText(const QString & text)
+{
+    QBuffer outBuf;
+    outBuf.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text);
+    outBuf.write(m_indent.toLocal8Bit());
+    outBuf.putChar('\t');
+    outBuf.write(text.toLocal8Bit());
+
+    qDebug() << outBuf.data();
+}
+
+void TrackerForQDebug::writeBeginElement(const QString &element,
+                                const QMap<QString, QString> & attribute)
+{
+    QBuffer outBuf;
+    outBuf.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text);
+    //outBuf.write("\n");
+    m_indent.append('\t');
+    outBuf.write(m_indent.toLocal8Bit());
+    outBuf.write(("<" + element).toLocal8Bit());
+    if (!attribute.isEmpty())
     {
-        delete trackHelperList.at(i);
+        for(QMap<QString, QString>::ConstIterator cit = attribute.begin();
+            cit != attribute.end();
+            ++cit)
+        {
+            outBuf.write( (" " + cit.key() + "=\"" + cit.value() + "\"").toLocal8Bit() );
+        }
+    }
+
+    outBuf.write( (QString(">")).toLocal8Bit() );
+
+    qDebug() << outBuf.data();
+}
+
+void TrackerForQDebug::writtEndElement(const QString &element, bool newLine)
+{
+    QBuffer outBuf;
+    outBuf.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text);
+//    if (newLine)
+//    {
+//        m_outPutFile.write("\n");
+//        m_outPutFile.write(m_indent.toLocal8Bit());
+//    }
+    outBuf.write(m_indent.toLocal8Bit());
+    m_indent.remove(m_indent.length()-1, 1);
+
+    outBuf.write( ("</" + element + ">").toLocal8Bit() );
+    qDebug() << outBuf.data();
+}
+
+TrackHelper* TrackHelper::createXmlFileTracker(const QString &title, const QString &file, TrackHelper *pTrackHelper)
+{
+    if (pTrackHelper == NULL)
+    {
+        TrackHelper *t = new TrackHelper(new TrackerForXmlFile(title, file));
+        return t;
+    }
+    else
+    {
+        pTrackHelper->appendTracker( new TrackerForXmlFile(title, file) );
+        return pTrackHelper;
     }
 }
 
-TrackHelper::TrackHelperDeleter TrackHelper::s_trackHelperDeleter;
-
-
-TrackHelper *TrackHelper::createTracker(const QString &title, const QString &file)
+TrackHelper* TrackHelper::createQDebugTracker(const QString & title,
+                              TrackHelper *pTrackHelper)
 {
-//    atexit( TrackHelper::deleteTrackHelper );
-    TrackHelper *t = new TrackHelper(Tracker::create(title, file));
-    return t;
+    if (pTrackHelper == NULL)
+    {
+        TrackHelper *t = new TrackHelper(new TrackerForQDebug(title));
+        return t;
+    }
+    else
+    {
+        pTrackHelper->appendTracker( new TrackerForQDebug(title) );
+        return pTrackHelper;
+    }
 }
 
 //void TrackHelper::deleteTrackHelper()
@@ -262,33 +390,87 @@ TrackHelper *TrackHelper::createTracker(const QString &title, const QString &fil
 
 //}
 
-TrackHelper::TrackHelper(Tracker *pT, /*const QString &title,*/
+TrackHelper::TrackHelper(ITracker *pT, /*const QString &title,*/
                          bool funcP, bool debugP, bool warningP)
     :
-      m_pTracker(pT),
       m_funcP(funcP),
       m_debugP(debugP),
       m_WarningP(warningP)
 {
-    assert(m_pTracker);
-    m_pTracker->increaseRef(m_pTracker);
+    assert(pT);
+
     s_trackHelperDeleter.trackHelperList.append(this);
 
-//    if (!title.isEmpty())
-//    {
+    appendTracker(pT);
+}
 
-    //    }
+bool TrackHelper::appendTracker(ITracker *pT)
+{
+    assert(pT);
+
+    if (!m_listTracker.contains(pT))
+    {
+        m_listTracker.append(pT);
+        pT->increaseRef(pT);
+    }
+
+    return true;
+}
+
+void TrackHelper::removeTracker(ITracker *pT)
+{
+    if (pT)
+    {
+        if (m_listTracker.contains(pT))
+        {
+            m_listTracker.removeOne(pT);
+            pT->decreaseRef(pT);
+        }
+    }
 }
 
 void TrackHelper::flush()
 {
-    m_pTracker->flush();
+    foreach(ITracker *pTracker, m_listTracker)
+    {
+        pTracker->flush();
+    }
+}
+
+ITracker* TrackHelper::getTracker(ETrackType trackType)
+{
+    switch (trackType) {
+    case ETrackTypeXmlFile:
+        foreach(ITracker *pTracker, m_listTracker)
+        {
+            TrackerForXmlFile* pT = dynamic_cast<TrackerForXmlFile*>(pTracker);
+            if (pT)
+                return pT;
+        }
+        break;
+    case ETrackTypeQDebug:
+        foreach(ITracker *pTracker, m_listTracker)
+        {
+            TrackerForQDebug* pT = dynamic_cast<TrackerForQDebug*>(pTracker);
+            if (pT)
+                return pT;
+        }
+        break;
+    default:
+        assert(!"error ETrackType");
+        break;
+    }
+
+    return NULL;
 }
 
 TrackHelper::~TrackHelper()
 {
-    m_pTracker->flush();
-    m_pTracker->decreaseRef(m_pTracker);
+    foreach(ITracker *pTracker, m_listTracker)
+    {
+        pTracker->flush();
+        pTracker->decreaseRef(pTracker);
+    }
 }
 
 void TrackHelper::setTrackEnable(bool funcEnable, bool debugEnable, bool warningEnable)
@@ -321,7 +503,10 @@ void TrackHelper::writeText(TrackHelper::TrackEnum type, const QString &text)
     QString ele;
     if (checkPrint(type, ele))
     {
-        m_pTracker->writeText(text);
+        foreach(ITracker *pTracker, m_listTracker)
+        {
+            pTracker->writeText(text);
+        }
     }
 }
 
@@ -333,7 +518,10 @@ void TrackHelper::trackBegin(TrackHelper::TrackEnum type, const QString &element
     QString ele = element;
     if (checkPrint(type, ele))
     {
-        m_pTracker->writeBeginElement(ele, attribute);
+        foreach(ITracker *pTracker, m_listTracker)
+        {
+            pTracker->writeBeginElement(ele, attribute);
+        }
     }
 
 }
@@ -343,7 +531,10 @@ void TrackHelper::trackEnd(TrackHelper::TrackEnum type, const QString &element, 
     QString ele = element;
     if (checkPrint(type, ele))
     {
-        m_pTracker->writtEndElement(ele, newLine);
+        foreach(ITracker *pTracker, m_listTracker)
+        {
+            pTracker->writtEndElement(ele, newLine);
+        }
     }
 }
 
@@ -398,6 +589,16 @@ bool TrackHelper::checkPrint(TrackHelper::TrackEnum type, QString &element)
 
     return true;
 }
+
+TrackHelper::TrackHelperDeleter::~TrackHelperDeleter()
+{
+    for(int i=0; i<trackHelperList.size(); i++)
+    {
+        delete trackHelperList.at(i);
+    }
+}
+
+TrackHelper::TrackHelperDeleter TrackHelper::s_trackHelperDeleter;
 
 
 //void TrackElement::debug(TrackHelper &t, const char *format, ...)

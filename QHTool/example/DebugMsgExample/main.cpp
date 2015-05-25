@@ -15,8 +15,8 @@ int main(int argc, char *argv[])
     fprintf(stdout, "Debug: to stdout\n");
     fprintf(stderr, "Debug: to stderr\n");
 
-    //qhInstallMsgHandler_file(QString("debugfile.txt"),
-       //                      QString("DebugMsgExample"));
+    qhInstallMsgHandler_file(QString("debugfile.txt"),
+                             QString("DebugMsgExample"));
 
     const char * info = "info";
     QH_D() << "QH_D info";
@@ -86,7 +86,8 @@ int main(int argc, char *argv[])
 //        QH_FATALP( "QH_FATALP info");
 #endif
 
-    g_pTrackHelper = TrackHelper::createTracker("DebugMsgExample", "trackFile.xml");
+    g_pTrackHelper = TrackHelper::createXmlFileTracker("DebugMsgExample", "trackFile.xml");
+    TrackHelper::createQDebugTracker("DebugMsgExample", g_pTrackHelper);
     g_pTrackHelper->setTrackEnable(true, true, true);
 //    g_pTrackHelper->setTrackEnable(false, false, false);
     QH_T_D(g_pTrackHelper, "begin");

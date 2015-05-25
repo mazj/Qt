@@ -11,12 +11,12 @@
 #ifndef QHDEBUGMSG_H
 #define QHDEBUGMSG_H
 
-#include <QDebug>
-#include <QNoDebug>
-#include <QFile>
-#include <QString>
-#include <QMap>
-#include <QList>
+#include <QtCore/QDebug>
+#include <QtCore/QNoDebug>
+#include <QtCore/QFile>
+#include <QtCore/QString>
+#include <QtCore/QMap>
+#include <QtCore/QList>
 
 /** ************************************************************************
  * \name 封装 qt的debug系统
@@ -169,8 +169,8 @@ bool qhInstallMsgHandler_file(const QString & file, const QString & softwareName
  * xml由于分级整齐，非常适合显示函数调用的堆栈过程。
  *
  * 设计思路：
- * 有三个类， 一个 Tracker 对应一个 xml文件；
- *          多个 TrackHelper 对应一个 Tracker, 外界主要使用  TrackHelper 进行log记录。
+ * 有三个类， 一个 ITracker 对应一个跟踪器，可以有多种类型的跟踪器；
+ *          多个 TrackHelper 对应一个 ITracker, 外界主要使用  TrackHelper 进行log记录。
  *          一个 TrackElement 对应一个 xml 文件的节点
  *
  * 使用示例：
@@ -179,8 +179,8 @@ bool qhInstallMsgHandler_file(const QString & file, const QString & softwareName
     #include <QHTool/qhDebugMsg.h>
 
     main(){
-        // 创建一个 Tracker（对应一个xml文件），得到一个TrackHelper，以后的log记录用该TrackHelper
-        TrackHelper *pTrackHelper = TrackHelper::createTracker("DebugMsgExample", "trackFile.xml");
+        // 创建一个 ITracker（对应一个xml文件），得到一个TrackHelper，以后的log记录用该TrackHelper
+        TrackHelper *pTrackHelper = TrackHelper::createXmlFileTracker("DebugMsgExample", "trackFile.xml");
         // 从函数级别设置 log级别
         pTrackHelper->setTrackEnable(true, true, true);
 
@@ -192,7 +192,7 @@ bool qhInstallMsgHandler_file(const QString & file, const QString & softwareName
         QH_T_C(pTrackHelper, "QH_T_C");
         QH_T_FLUSH(pTrackHelper);  // 强制刷新输出
 
-        // 可以再创建 TrackHelper，使用同一个 Tracker，即输出到同一个 xml 文件中
+        // 可以再创建 TrackHelper，使用同一个 ITracker，即输出到同一个 xml 文件中
         TrackHelper *p = new TrackHelper(pTrackHelper->getTracker());
         p->setTrackEnable(false, true, true);  //定义的输出级别不同，从而不同的 TrackHelper 输出的log级别不同 。
         QH_T_D_IF(1, p, "QH_T_D");
@@ -205,7 +205,13 @@ bool qhInstallMsgHandler_file(const QString & file, const QString & softwareName
 
 class TrackHelper;
 class TrackElement;
-class Tracker;
+class ITracker;
+
+enum ETrackType
+{
+    ETrackTypeXmlFile,
+    ETrackTypeQDebug
+};
 
 /**
  * 供外界直接使用的类
@@ -222,24 +228,32 @@ public:
     };
 
     /**
-     * 创建 一个 Tracker，返回 TrackHelper。 一个 Tracker 对应一个 xml格式的输出文件，一个
-     * Tracker 可以有多个 TrackHelper。
+     * 创建 一个 XmlFileTracker TrackHelper。 一个 Tracker 对应一个 xml格式的输出文件，一个
+     * ITracker 可以有多个 TrackHelper。
      * @param title 输出文件的根节点
      * @param file  文件名称
      * @return
      * \note 只创建，创建完的 TrackHelper 不需要用户主动销毁。
      */
-    static TrackHelper *createTracker(const QString & title,
-                              const QString & file/*, bool delAtExit*/);
+    static TrackHelper *createXmlFileTracker(const QString & title,
+                              const QString & file,  TrackHelper *pTrackHelper = NULL);
+
+    static TrackHelper *createQDebugTracker(const QString & title,
+                              TrackHelper *pTrackHelper = NULL);
+
 //    static void deleteTrackHelper();
 
-    TrackHelper(Tracker *pT, /*const QString & title,*/
+    TrackHelper(ITracker *pT, /*const QString & title,*/
                 bool funcP = true, bool debugP = true, bool warningP = true);
+
+    bool appendTracker(ITracker *pT);
+    void removeTracker(ITracker *pT);
     /**
      * 强制刷新输出
      */
     void flush();
-    Tracker * getTracker() { return m_pTracker; }
+    ITracker * getTracker(ETrackType trackType);
+
     /**
      * 设置各个输出级别的log是否有效
      * @param funcEnable 函数的出入栈信息有效
@@ -272,7 +286,7 @@ protected:
     bool checkPrint(TrackEnum type, QString & element);
 
 protected:
-    Tracker *m_pTracker;
+    QList<ITracker*> m_listTracker;
     unsigned int m_funcP : 1;
     unsigned int m_debugP : 1;
     unsigned int m_WarningP : 1;
