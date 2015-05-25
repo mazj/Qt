@@ -11,8 +11,9 @@ DebugMsgMainWnd::DebugMsgMainWnd(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::DebugMsgMainWnd)
 {
+    dumpObjectTree();
     TrackHelper *p = new TrackHelper(g_pTrackHelper->getTracker());
-    QH_T_FUNCL(p);
+    QH_T_FUNCLI(p, "my info");
     QH_T_D_IF(1, p, "QH_T_D");
     QH_T_D_IF(0, p, "QH_T_D");
     QH_T_W_IF(1, p, "QH_T_W");

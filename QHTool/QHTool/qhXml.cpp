@@ -224,7 +224,7 @@ bool xmlWriteFunc(QDomDocument& doc, QIODevice &device, const QSettings::Setting
    #endif
     //QDomElement root;
 
-    QSettings::SettingsMap::Iterator it = map.begin();
+    QSettings::SettingsMap::ConstIterator it = map.begin();
 //    if (it!=map.end())
 //    {
 //        root = doc.createElement(it.key());

@@ -2,17 +2,53 @@
 #include <stdarg.h>
 #include <assert.h>
 //£º#include <stdarg.h>
+#include <QtGlobal>
 #include <QtCore>
 #undef COMPILE_QH_DEBUGMSG
+#include "QHToolConfig.h"
 #include "qhDebugMsg.h"
 
 QFile *s_pOutPutFile = NULL;
 
-/**
- * @brief ghMessageOutputToFile
- * @param type
- * @param msg
- */
+#ifdef QHTOOL_QT5
+
+void ghMessageOutputToFile(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+{
+    if (!s_pOutPutFile)
+    {
+        return;
+    }
+
+    char localMsg[1024];
+    localMsg[1023] = '\0';
+    switch (type) {
+    case QtDebugMsg:
+        _snprintf(localMsg, 1023, "Debug: %s (%s:%u, %s)\n", msg.toLocal8Bit().constData(), context.function, context.line, context.file);
+        break;
+    case QtWarningMsg:
+        _snprintf(localMsg, 1023, "Warning: %s (%s:%u, %s)\n", msg.toLocal8Bit().constData(), context.function, context.line, context.file);
+        break;
+    case QtCriticalMsg:
+        _snprintf(localMsg, 1023, "Critical: %s (%s:%u, %s)\n", msg.toLocal8Bit().constData(), context.function, context.line, context.file);
+        break;
+    case QtFatalMsg:
+        _snprintf(localMsg, 1023, "Fatal: %s (%s:%u, %s)\n", msg.toLocal8Bit().constData(), context.function, context.line, context.file);
+        break;
+    }
+
+     s_pOutPutFile->write(localMsg);
+     s_pOutPutFile->flush();
+
+     if (type == QtFatalMsg)
+#ifdef _DEBUG
+        assert(!"type == QtFatalMsg");
+#else
+         abort();
+#endif
+}
+
+#else
+
 void ghMessageOutputToFile(QtMsgType type, const char *msg)
 {
     if (!s_pOutPutFile)
@@ -45,6 +81,8 @@ void ghMessageOutputToFile(QtMsgType type, const char *msg)
 
 }
 
+#endif
+
 bool qhInstallMsgHandler_file(const QString & file, const QString & softwareName)
 {
     if (!s_pOutPutFile)
@@ -61,7 +99,11 @@ bool qhInstallMsgHandler_file(const QString & file, const QString & softwareName
                              .toLocal8Bit());
         s_pOutPutFile->write(QDateTime::currentDateTime().toString().toLocal8Bit());
         s_pOutPutFile->write("\n");
+#ifdef QHTOOL_QT5
+        qInstallMessageHandler(ghMessageOutputToFile);
+#else
         qInstallMsgHandler(ghMessageOutputToFile);
+#endif
 
         return true;
     }

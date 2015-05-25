@@ -2,6 +2,7 @@
 #define SETTINGTEXTCODEC_HPP
 
 #include <QTextCodec>
+#include "QHToolConfig.h"
 
 /**
  * @brief The SettingTextCodec class
@@ -14,6 +15,7 @@
     QTextCodec::codecForCStrings();
     QTextCodec::codecForTr();
  */
+#ifdef QHTOOL_QT4
 class SettingTextCodec
 {
 public:
@@ -39,5 +41,26 @@ private:
     QTextCodec *m_cs;
     QTextCodec *m_ct;
 };
+#endif
+
+#ifdef QHTOOL_QT5
+class SettingTextCodec
+{
+public:
+    SettingTextCodec(QTextCodec *cl)
+    {
+        m_cl = QTextCodec::codecForLocale();
+
+        QTextCodec::setCodecForLocale(cl);
+    }
+
+    ~SettingTextCodec()
+    {
+        QTextCodec::setCodecForLocale(m_cl);
+    }
+private:
+    QTextCodec *m_cl;
+};
+#endif
 
 #endif // SETTINGTEXTCODEC_HPP

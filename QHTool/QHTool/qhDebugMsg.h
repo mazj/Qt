@@ -154,7 +154,7 @@ class QTableWidget;
  * 安装 qt 的 MsgHandler 到文件 file 中
  * @param file
  * @param softwareName
- * \test qInstallMsgHandler
+ * \test qInstallMsgHandler qInstallMessageHandler
  */
 bool qhInstallMsgHandler_file(const QString & file, const QString & softwareName);
 
@@ -367,12 +367,20 @@ protected:
   若 跟踪函数堆栈信息有效，则在其他信息中不显示函数和行号信息，否则显示
   */
 #if (QH_T_MSG_FLG & QH_T_MSG_FUNC_BIT)
+
 #define QH_T_FUNCL(pTrackerHelper) \
     TrackElement _trackElementTmp(*(pTrackerHelper), TrackHelper::TrackFunc, \
         QString(__FUNCTION__)+":"+QString::number(__LINE__), true)
+#define QH_T_FUNCLI(pTrackerHelper, info) \
+    QMap<QString, QString> attrs; \
+    attrs["info"] = info; \
+    TrackElement _trackElementTmp(*(pTrackerHelper), TrackHelper::TrackFunc, attrs, \
+        QString(__FUNCTION__)+":"+QString::number(__LINE__), true)
 #define QH_T_ADD_FUNC_LINE
+
 #else
 #define QH_T_FUNCL(trackerHelper) ((void)0)
+#define QH_T_FUNCLI(pTrackerHelper, info)  ((void)0)
 #define QH_T_ADD_FUNC_LINE ("["+QString(__FUNCTION__)+":"+QString::number(__LINE__)+"]")+
 #endif
 

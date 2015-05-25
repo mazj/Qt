@@ -4,9 +4,9 @@
 #
 #-------------------------------------------------
 
-greaterThan(QT_MAJOR_VERSION, 4) {
-    QT       += widgets
-}
+#greaterThan(QT_MAJOR_VERSION, 4) {
+#    QT       += widgets
+#}
 
 QT += xml
 
@@ -38,7 +38,8 @@ HEADERS += ../QHTool/QHTool.h \
     #XmlSettings.h
     ../QHTool/qhXml.h \
     ../QHTool/QHToolGlobal.h \
-    ../QHTool/SettingTextCodec.hpp
+    ../QHTool/SettingTextCodec.hpp \
+    ../QHTool/QHToolConfig.h
 
 
 unix {

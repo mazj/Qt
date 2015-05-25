@@ -2,6 +2,7 @@
 #define QHTOOLGLOBAL_H
 
 #include<stdexcept>
+#include "QHToolConfig.h"
 
 // ±àÂë·½Ê½
 enum EQHEncode

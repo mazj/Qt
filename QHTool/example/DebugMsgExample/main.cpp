@@ -12,8 +12,11 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    qhInstallMsgHandler_file(QString("debugfile.txt"),
-                             QString("DebugMsgExample"));
+    fprintf(stdout, "Debug: to stdout\n");
+    fprintf(stderr, "Debug: to stderr\n");
+
+    //qhInstallMsgHandler_file(QString("debugfile.txt"),
+       //                      QString("DebugMsgExample"));
 
     const char * info = "info";
     QH_D() << "QH_D info";
@@ -63,6 +66,8 @@ int main(int argc, char *argv[])
         QH_D() << "should not out put!!";
     }
 
+    qDebug() << " qDebug()";
+
 #ifndef QT_NO_DEBUG
 //    QH_FATAL() << "QH_FATAL info";
     QH_FATALP( "QH_FATALP %s", info);
@@ -70,6 +75,8 @@ int main(int argc, char *argv[])
 
     QH_FATALP_IF(1, "QH_FATALP_IF(1) info");
     QH_FATALP_IF(0, "QH_FATALP_IF(1) info");
+
+
 
     // 下面两种形式不能 编译通过
 //    QH_FATALP_IF(1, "QH_FATALP_IF(1) %s", info);
