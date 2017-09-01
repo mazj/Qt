@@ -559,7 +559,7 @@ bool qhParseCSVString(const QString &csvStr, QList<QStringList>& splitedCsvList)
             {
                 i++;
                 waitCell = EWaitCellEndWithQuotation;
-//                SPos p = {splitedCsvList.size()-1, i-pos}; //tian_tag
+//                SPos p = {splitedCsvList.size()-1, i-pos};
 //                removePos.push_back(p);
             }
             else if (csvStr[i] == '"')

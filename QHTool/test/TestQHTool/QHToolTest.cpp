@@ -273,7 +273,12 @@ void QHToolTest::test_qhGetQSettingsXmlFormat_data()
 void QHToolTest::test_qhGetQSettingsXmlFormat()
 {
     QTextCodec * codec = QTextCodec::codecForName("GBK");
+#ifdef QHTOOL_QT4
     SettingTextCodec stc(codec, codec, codec);
+#endif
+#ifdef QHTOOL_QT5
+    SettingTextCodec stc(codec);
+#endif
 
     QFETCH(int, textcodec);
     {

@@ -69,7 +69,7 @@ bool XmlSettings::xmlWriteFunc(QIODevice &device, const QSettings::SettingsMap &
     QDomDocument doc;
     QDomElement root;
 
-    QSettings::SettingsMap::Iterator it = map.begin();
+    QSettings::SettingsMap::ConstIterator it = map.begin();
     if (it!=map.end())
     {
         root = doc.createElement(it.key());

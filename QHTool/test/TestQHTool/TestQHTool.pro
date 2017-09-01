@@ -6,6 +6,10 @@
 
 QT       += xml testlib
 
+greaterThan(QT_MAJOR_VERSION, 4) {
+    QT       += widgets
+}
+
 TARGET = tst_QHToolTest
 CONFIG   += console
 CONFIG   -= app_bundle
